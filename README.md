@@ -1,6 +1,6 @@
-ƒCƒ`‚ÌA‚İ‚¿
+ã‚¤ãƒã®ã€ã¿ã¡
 ===========
-[Global Game Jam Sapporo 2013](http://atnd.org/event/ggjsap13 "Global Game Jam Sapporo 2013 | W‹q‚È‚çƒCƒxƒ“ƒgƒAƒeƒ“ƒh")‚Åì¬‚µ‚½ƒQ[ƒ€‚Å‚·B
+[Global Game Jam Sapporo 2013](http://atnd.org/event/ggjsap13 "Global Game Jam Sapporo 2013 | é›†å®¢ãªã‚‰ã‚¤ãƒ™ãƒ³ãƒˆã‚¢ãƒ†ãƒ³ãƒ‰")ã§ä½œæˆã—ãŸã‚²ãƒ¼ãƒ ã§ã™ã€‚
 
--   [”z•zƒy[ƒWiGlobalGameJamŒö®j](http://globalgamejam.org/2013/%E3%82%A4%E3%83%81%E3%81%AE%E3%80%81%E3%81%BF%E3%81%A1 "ƒCƒ`‚ÌA‚İ‚¿ | Global Game Jam")
--   [ƒvƒƒWƒFƒNƒgƒy[ƒWiD–yƒQ[ƒ€»ìÒƒRƒ~ƒ…ƒjƒeƒBuKawazvƒTƒCƒg“àj](http://www.kawaz.org/projects/ichi-no-michi/ "Kawaz - ƒCƒ`‚ÌA‚İ‚¿")
+-   [é…å¸ƒãƒšãƒ¼ã‚¸ï¼ˆGlobalGameJamå…¬å¼ï¼‰](http://globalgamejam.org/2013/%E3%82%A4%E3%83%81%E3%81%AE%E3%80%81%E3%81%BF%E3%81%A1 "ã‚¤ãƒã®ã€ã¿ã¡ | Global Game Jam")
+-   [ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒšãƒ¼ã‚¸ï¼ˆæœ­å¹Œã‚²ãƒ¼ãƒ è£½ä½œè€…ã‚³ãƒŸãƒ¥ãƒ‹ãƒ†ã‚£ã€ŒKawazã€ã‚µã‚¤ãƒˆå†…ï¼‰](http://www.kawaz.org/projects/ichi-no-michi/ "Kawaz - ã‚¤ãƒã®ã€ã¿ã¡")
