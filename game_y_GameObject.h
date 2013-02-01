@@ -36,7 +36,7 @@ public:
 };
 
 
-#define CHIP_NUM 40
+#define CHIP_NUM 27
 class Player :
 	public GameObject
 {
@@ -68,6 +68,7 @@ public:
 	double v_y;
 	int type;
 	int image;
+	int damaged;
 public:
 	SoundSource(void);
 	void beep(void);
