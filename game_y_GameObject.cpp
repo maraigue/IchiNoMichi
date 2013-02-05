@@ -1,10 +1,8 @@
-#include "game_y_GameObject.h"
-#include <DxLib.h>
-#include <stdio.h>
-#include "game_y_define.h"
-
-#include <Windows.h>
 #include <sstream>
+#include <DxLib.h>
+
+#include "game_y_GameObject.h"
+#include "game_y_define.h"
 
 GameObject::GameObject(void)
 {
@@ -28,10 +26,10 @@ void SoundSource::draw(void)
 {
 	if(this->visible){
 		wave.draw();
-		if(!caught){
-
-		} else {
+		if(caught || damaged > 0){
 			DrawRotaGraph2( this->x, this->y, 15, 15,1.0, 0.0, this->image, TRUE, FALSE) ;
+		} else {
+			//DrawRotaGraph2( this->x, this->y, 15, 15,1.0, 0.0, this->image, TRUE, FALSE) ;
 		}
 
 	}
@@ -93,7 +91,7 @@ void SoundWave::draw(void)
 
 Player::Player(void)
 {
-	LoadDivGraph("res/img/ch1.png", CHIP_NUM,3,8,46,63, this->charaChip);
+	LoadDivGraph("res/img/ch1.png", CHIP_NUM,3,9,46,63, this->charaChip);
 	scoreImage = LoadGraph("res/img/score bar.png");
 	secencer = 0;
 	x = WINDOW_WIDTH / 2;
@@ -134,7 +132,7 @@ void Player::draw(void){
 	DrawGraph(0, WINDOW_HEIGHT - 65, scoreImage ,FALSE);
 	DrawBox(secencer - 20, WINDOW_HEIGHT - 65, secencer + 0, WINDOW_HEIGHT - 15,GetColor(255,0,0),FALSE);
 
-	//DrawGraph(this->x - 20, this->y - 32,charaChip[dir * 5 + (count / 20)], TRUE);
+	DrawGraph(this->x - 20, this->y - 32,charaChip[dir * 3 + (count / 20)], TRUE);
 	secencer = ++secencer % WINDOW_WIDTH;
 	//PlaySoundMem(moveSound, DX_PLAYTYPE_BACK);
 }
@@ -161,7 +159,7 @@ void Player::translate(double dx, double dy) {
 		}
 	} else {
 		if(dy > 0){
-			dir = 2;
+			dir = 2; dir  =1;
 		} else if(dy < 0) {
 			dir = 8; dir = 2;
 		} else {
