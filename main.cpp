@@ -41,7 +41,6 @@ public:
 	}
 	
 	void init(GameResult * result){
-		
 		if(result) res = *result;
 		res.end_status(0);
 		key_pressed = 0;
@@ -91,132 +90,122 @@ public:
 // ゲーム全体
 // ============================================================
 
-const int SCENES = 34;
-const int FIRST_TUTGAME_ID = 3;
-const int FIRST_MAINGAME_ID = 6;
-const int FIRST_PROLOG_ID = 15;
-const int FIRST_EPILOG_ID = 24;
-const int FIRST_ENDING_ID = 33;
-inline int IS_AFTER_OPENING(int n){ return(n == 0); }
-inline int IS_AFTER_TUTORIAL_GAME(int n){ return(n >= FIRST_TUTGAME_ID && n < FIRST_MAINGAME_ID); }
-inline int IS_AFTER_MAIN_GAME(int n){ return(n >= FIRST_MAINGAME_ID && n < FIRST_PROLOG_ID); }
+// シーンの一覧を保持する
+class SceneSet{
+public:
+	static const int STAGES = 4;
 
-GameResult PlayerStatus;
-Scene * SelectedGame = NULL;
+private:
+	Scene * menus[3];
+	Scene * game;
+	Scene * tutorial;
+	Scene * prologs[STAGES];
+	Scene * epilogs[STAGES];
+	Scene * ending;
 
-void define_scenes(Scene ** sc){
-	sc[0] = new SceneDummyGame("", "res/bg/__opening.png");
-	sc[1] = new SceneSelectStage<StageDefTutorial>();
-	sc[2] = new SceneSelectStage<StageDefMap>();
-	
-	sc[3] = new SceneStepGameTutorial();
-	sc[4] = new SceneDummyGame("Game \"Dark Room\" Tutorial\0");
-	sc[5] = new SceneDummyGame("Game \"Road\" Tutorial\0"); // new GameRoad();
-	
-	const char * story1 = "A shade seen in a forest\0Her name is Ichi\0She is shaking her head\0as she lost her way\0Now she is walking around\0to get out here\0";
-	const char * story2 = "Somebody over there\0Ichi shouted with full of her voice\0for asking her way\0But the voice not reached the person\0and she went away and away\0Ichi begin running for him\0";
-	const char * story3 = "Ichi found something on the ground\0a cute red ribbonShe wonder why it is here\0as nobody is here\0She thinks it is probably owned\0by the person over there\0Ichi continues running for the person\0";
+public:
+	SceneSet(){
+		menus[0] = new SceneDummyGame("", "res/bg/__opening.png");
+		menus[1] = new SceneSelectStage<StageDefTutorial>();
+		menus[2] = new SceneSelectStage<StageDefMap>();
+		
+		prologs[0] = new SceneDummyGame("A shade seen in a forest\0Her name is Ichi\0She is shaking her head\0as she lost her way\0Now she is walking around\0to get out here\0");
+		prologs[1] = new SceneDummyGame("Somebody over there\0Ichi shouted with full of her voice\0for asking her way\0But the voice not reached the person\0and she went away and away\0Ichi begin running for him\0");
+		prologs[2] = new SceneDummyGame("Ichi found something on the ground\0a cute red ribbonShe wonder why it is here\0as nobody is here\0She thinks it is probably owned\0by the person over there\0Ichi continues running for the person\0");
+		prologs[3] = new SceneDummyGame("Stage4\0");
+		
+		epilogs[0] = new SceneDummyGame("Stage 1 Cleared!\0");
+		epilogs[1] = new SceneDummyGame("Stage 2 Cleared!\0");
+		epilogs[2] = new SceneDummyGame("Stage 3 Cleared!\0");
+		epilogs[3] = new SceneDummyGame("Stage 4 Cleared!\0");
 
-	sc[15] = new SceneDummyGame(story1);
-	sc[16] = new SceneDummyGame(story1);
-	sc[17] = new SceneDummyGame(story1);
-	sc[18] = new SceneDummyGame(story2);
-	sc[19] = new SceneDummyGame(story2);
-	sc[20] = new SceneDummyGame(story2);
-	sc[21] = new SceneDummyGame(story3);
-	sc[22] = new SceneDummyGame(story3);
-	sc[23] = new SceneDummyGame(story3);
-	
-	sc[24] = new SceneDummyGame("Stage 1 Cleared!\0");
-	sc[25] = new SceneDummyGame("Stage 1 Cleared!\0");
-	sc[26] = new SceneDummyGame("Stage 1 Cleared!\0");
-	sc[27] = new SceneDummyGame("Stage 2 Cleared!\0");
-	sc[28] = new SceneDummyGame("Stage 2 Cleared!\0");
-	sc[29] = new SceneDummyGame("Stage 2 Cleared!\0");
-	sc[30] = new SceneDummyGame("Stage 3 Cleared!\0");
-	sc[31] = new SceneDummyGame("Stage 3 Cleared!\0");
-	sc[32] = new SceneDummyGame("Stage 3 Cleared!\0");
-
-	sc[33] = new SceneDummyGame("", "res/bg/G_end+credit.png");
-}
-
-Scene * getSceneById(Scene ** sc, int n){
-	if(n >= FIRST_MAINGAME_ID && n < FIRST_PROLOG_ID){
-		return SelectedGame;
-	}else{
-		return sc[n];
+		ending = new SceneDummyGame("", "res/bg/G_end+credit.png");
 	}
-}
 
-int select_next_scene(int source_scene, GameResult * result){
-	if(source_scene == 0){
-		// オープニングの場合：終わったらメインメニューへ
-		if(result) *result = GameResult();
-		return 1;
-	}else if(source_scene == 1){
-		// チュートリアルの場合：当該番号のゲームへ移動
-		result->stage_level(0);
-		result->stage_color(1);
-		result->r_score(0);
-		result->g_score(0);
-		result->b_score(0);
-		switch(result->stage_id()){
-			case 1:
-				SelectedGame = new SceneStepGame();
-				return 3;
-			case 2:
-				SelectedGame = new Darkroom();
-				return 4;
-			case 3:
-				SelectedGame = new GameRoad();
-				((GameRoad *)SelectedGame)->s_col = 0;	// 初期色設定
-				((GameRoad *)SelectedGame)->stage = 0;	// チュートリアル
-				((GameRoad *)SelectedGame)->init(NULL);
-				return 5;
-		}
-	}else if(source_scene == 2){
-		// メインメニューの場合
-		if(result->stage_id() >= 1){
-			// 正の数の場合、当該番号のゲームのプロローグへ移動
-			result->stage_level((result->stage_id() + 2) / 3);
-			result->stage_color((result->stage_id() + 2) % 3);
-			result->r_score(PlayerStatus.r_score());
-			result->g_score(PlayerStatus.g_score());
-			result->b_score(PlayerStatus.b_score());
-			return result->stage_id() + FIRST_PROLOG_ID - 1;
-		}else if(result->stage_id() <= -1){
-			// 負の数の場合、当該番号のエンディングへ移動
-			return -(result->stage_id()) + FIRST_ENDING_ID - 1;
-		}else{
-			// ゼロの場合、エンディングへ移動
-			return FIRST_ENDING_ID;
-		}
-	}else if(source_scene >= FIRST_TUTGAME_ID && source_scene < FIRST_MAINGAME_ID){
-		// チュートリアルのゲームの場合
-		// ゲームが終了した場合、メインメニューへ
-		return 2;
-	}else if(source_scene >= FIRST_MAINGAME_ID && source_scene < FIRST_PROLOG_ID){
-		// 本番のゲームの場合
-		// ゲームが終了した場合、成功したら当該ゲームのエピローグへ、失敗したらエンディングへ
-		if(result->end_status()){
-			PlayerStatus.r_score(PlayerStatus.r_score() + result->r_score());
-			PlayerStatus.g_score(PlayerStatus.g_score() + result->g_score());
-			PlayerStatus.b_score(PlayerStatus.b_score() + result->b_score());
-			return source_scene - FIRST_MAINGAME_ID + FIRST_EPILOG_ID;
-		}else{
-			return FIRST_ENDING_ID;
-		}
-	}else if(source_scene >= FIRST_PROLOG_ID && source_scene < FIRST_EPILOG_ID){
-		// ゲームのプロローグの場合
-		// 当該ゲームのゲーム本番へ
-		return source_scene - FIRST_PROLOG_ID + FIRST_MAINGAME_ID;
-	}else if(source_scene >= FIRST_EPILOG_ID && source_scene < FIRST_ENDING_ID){
-		// ゲームのエピローグの場合
-		// メインメニューへ
-		return 2;
+	~SceneSet(){
+		delete menus[0]; delete menus[1]; delete menus[2];
+		delete prologs[0]; delete prologs[1]; delete prologs[2]; delete prologs[3];
+		delete epilogs[0]; delete epilogs[1]; delete epilogs[2]; delete epilogs[3];
+		delete ending;
 	}
-	return 0;
-}
+
+	// ゲーム結果やステージセレクト結果を反映する。
+	// 返り値で次のSceneを返し、同時にcurrent_stageを最新のものに更新する。
+	Scene * select_next_scene(GameResult * current_stage, GameResult * update_result){
+		switch(current_stage->map_id()){
+			case 0: // 何も準備されていない場合: オープニング画面へ
+				current_stage->map_id(1);
+				return menus[0];
+			case 1: // いまオープニングである場合: チュートリアル選択画面へ
+				current_stage->map_id(2);
+				current_stage->stage_situation(0);
+				update_result->end_status(0);
+				return menus[1];
+			case 2: // いまチュートリアル選択画面である場合: チュートリアルへ
+				switch(current_stage->stage_situation()){
+					case 0: // チュートリアル選択画面に入った直後だった場合
+						current_stage->stage_situation(2); // ゲーム中（チュートリアル中）であることを指定
+						current_stage->stage_level(0); // チュートリアルであることを指定
+						
+						// ここでの選択結果によってゲームの種類を決定
+						switch(update_result->stage_id()){
+							case 1:
+								game = new SceneStepGame();
+								tutorial = new SceneStepGameTutorial();
+								break;
+							case 2:
+								game = new Darkroom();
+								tutorial = new SceneDummyGame("Game \"Dark Room\" Tutorial\0");
+								break;
+							case 3:
+								game = new GameRoad();
+								tutorial = new SceneDummyGame("Game \"Road\" Tutorial\0"); // new GameRoad();
+								break;
+							default:
+								game = NULL;
+								tutorial = NULL;
+								break;
+						}
+						return tutorial;
+					case 2: // チュートリアル終了後の場合
+						current_stage->map_id(3);
+						current_stage->stage_situation(0);
+						update_result->end_status(0);
+						return menus[2];
+				}
+				break;
+			case 3: // いまメインゲーム選択画面である場合:
+				switch(current_stage->stage_situation()){
+					case 0: // ゲームが選ばれた直後だった場合: オープニングへ
+						current_stage->stage_situation(1); // オープニングであることを指定
+						current_stage->stage_level(update_result->stage_level());
+						return prologs[update_result->stage_level() - 1];
+					case 1: // オープニングが終わった場合: メインゲームへ
+						current_stage->stage_situation(2); // ゲーム中であることを指定
+						current_stage->stage_level(update_result->stage_level());
+						return game;
+					case 2: // メインゲーム終了後の場合: エンディングへ
+						current_stage->stage_situation(3);
+						return epilogs[current_stage->stage_level() - 1];
+					case 3: // エンディング終了後の場合: ゲームオーバー or 次のレベルへ
+						if(update_result->end_status()){
+							current_stage->stage_situation(0);
+							current_stage->stage_level(update_result->stage_level() + 1);
+							return menus[2];
+						}else{
+							return ending;
+						}
+					case 4: // 全ステージクリアの場合: 全体のエンディングへ
+						current_stage->map_id(4);
+						return ending;
+				}
+				break;
+			case 4: // エンディング
+				return ending;
+		}
+		return NULL;
+	}
+};
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -231,37 +220,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return -1;
 	}
 	SetDrawScreen(DX_SCREEN_BACK);
-
-	Scene * sc[SCENES];
-	define_scenes(sc);
-	int current_scene = 0, prev_scene;
-	GameResult * update_result;
-	GameResult chosen_stage_info;
 	
-	sc[0]->init(NULL);
+	GameResult player_status;
+	GameResult * update_result;
+	SceneSet * scene_set = new SceneSet();
+	Scene * current_scene_tmp;
+	Scene * current_scene = scene_set->select_next_scene(&player_status, NULL);
+	current_scene->init(NULL);
+	
 	while(ProcessMessage() == 0){
 		ClearDrawScreen();
 		
-		update_result = getSceneById(sc, current_scene)->update();
+		update_result = current_scene->update();
 		if(update_result != NULL){
 			while(GetInputChar(TRUE)){ }
-			
-			prev_scene = current_scene;
-			current_scene = select_next_scene(current_scene, update_result);
-			
-			update_result->stage_id(prev_scene);
-			getSceneById(sc, current_scene)->init(update_result);
+
+			current_scene_tmp = scene_set->select_next_scene(&player_status, update_result);
+			if(current_scene_tmp != NULL){
+				current_scene = current_scene_tmp;
+				current_scene->init(update_result);
+			}
 		}
-		getSceneById(sc, current_scene)->draw();
+		current_scene->draw();
 		ScreenFlip();
 	}
 	
-	for(int i = 0; i < SCENES; ++i){
-		if(i < FIRST_MAINGAME_ID || i >= FIRST_PROLOG_ID){
-			delete sc[i];
-		}
-	}
-	
+	delete scene_set;
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 	return 0;				// ソフトの終了 
 }

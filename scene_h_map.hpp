@@ -4,8 +4,10 @@
 #define BIT(n) (1 << (n))
 #define XPOS(stg) ((stg)[0])
 #define YPOS(stg) ((stg)[1])
-#define NEXT_STAGES(stg) ((stg)[2])
-#define IS_NEXT_STAGE(stg, next_stage_id) ((stg)[2] & BIT(next_stage_id))
+#define STAGE_LEVEL(stg) ((stg)[2])
+#define STAGE_COLOR(stg) ((stg)[3])
+#define NEXT_STAGES(stg) ((stg)[4])
+#define IS_NEXT_STAGE(stg, next_stage_id) ((stg)[4] & BIT(next_stage_id))
 
 // ============================================================
 // ステージ選択画面
@@ -98,19 +100,18 @@ public:
 		icon_map[7] = LoadGraph("res/img/4-R.png");
 		icon_map[8] = LoadGraph("res/img/4-G.png");
 		icon_map[9] = LoadGraph("res/img/4-B.png");
+		
+		stage_map = LoadGraph("res/bg/map_bg.png");
+		current_stage_id = 0;
+		previous_stage_id = 0;
+		cleared_stage_ids = 0;
+		game_cleared = 0;
+		change_current_stage_id(1);
+		create_stage_map_template();
 	}
 	
 	void init(GameResult * previous_result){
-		if(StageDef::need_initialized(previous_result->stage_id())){
-			// チュートリアルの後だった場合（初めての呼び出しのため、要初期化）
-			stage_map = LoadGraph("res/bg/map_bg.png");
-			current_stage_id = 0;
-			previous_stage_id = 0;
-			cleared_stage_ids = 0;
-			game_cleared = 0;
-			change_current_stage_id(1);
-			create_stage_map_template();
-		}else{
+		if(previous_result->end_status()){
 			// ステージがクリアできていた場合
 			cleared_stage_ids |= BIT(current_stage_id);
 			if(NEXT_STAGES(stage(current_stage_id)) == 0){
@@ -143,6 +144,8 @@ public:
 				case CTRL_CODE_CR:
 					// ゲームステージへ移動
 					result.stage_id(current_stage_id);
+					result.stage_level(STAGE_LEVEL(stage(current_stage_id)));
+					result.stage_color(STAGE_COLOR(stage(current_stage_id)));
 					return &result;
 			}
 			return NULL;
@@ -217,45 +220,44 @@ public:
 // ステージ配置の定義。
 // 第1要素: x座標（中心点で指定する）
 // 第2要素: y座標（同上）
-// 第3要素: 次に進めるステージの一覧（ビットマスクで表現）
-// 第3要素が0（どのステージも指定されていない）の場合、エンディングに繋がる
+// 第3要素: ステージのレベル（0:チュートリアル 1以上:ステージ番号）
+// 第4要素: ステージ色（0:赤 1:緑 2:青 -1:色なし）
+// 第5要素: 次に進めるステージの一覧（ビットマスクで表現）
+// ※第1要素・第2要素ともに0の場合、マップ上に表示されない
+//   （マップを開いたときに最初に選べるステージを選ぶ）
+// ※第5要素が0（どのステージも指定されていない）の場合、エンディングに繋がる
 class StageDefMap {
 public:
-	static const int STAGE_NUMBER = 10;
-	static const int STAGE[STAGE_NUMBER][3];
-	static const int need_initialized(int game_id){
-		return(IS_AFTER_TUTORIAL_GAME(game_id) || game_id == 0);
-	}
+	static const int STAGE_NUMBER = 11;
+	static const int STAGE[STAGE_NUMBER][5];
 };
 
-const int StageDefMap::STAGE[STAGE_NUMBER][3] = {
-	{109, 303, BIT(1)|BIT(2)|BIT(3)},
-	{286, 180, BIT(4)|BIT(5)|BIT(6)},
-	{286, 303, BIT(4)|BIT(5)|BIT(6)},
-	{286, 431, BIT(4)|BIT(5)|BIT(6)},
-	{463, 180, BIT(7)|BIT(8)|BIT(9)},
-	{463, 303, BIT(7)|BIT(8)|BIT(9)},
-	{463, 431, BIT(7)|BIT(8)|BIT(9)},
-	{640, 180, 0},
-	{640, 303, 0},
-	{640, 431, 0},
+const int StageDefMap::STAGE[STAGE_NUMBER][5] = {
+	{0, 0, 0, -1, BIT(1)},
+	{109, 303, 1,-1, BIT(2)|BIT(3)|BIT(4)},
+	{286, 180, 2, 0, BIT(5)|BIT(6)|BIT(7)},
+	{286, 303, 2, 1, BIT(5)|BIT(6)|BIT(7)},
+	{286, 431, 2, 2, BIT(5)|BIT(6)|BIT(7)},
+	{463, 180, 3, 0, BIT(8)|BIT(9)|BIT(10)},
+	{463, 303, 3, 1, BIT(8)|BIT(9)|BIT(10)},
+	{463, 431, 3, 2, BIT(8)|BIT(9)|BIT(10)},
+	{640, 180, 4, 0, 0},
+	{640, 303, 4, 1, 0},
+	{640, 431, 4, 2, 0},
 };
 
 
 class StageDefTutorial {
 public:
 	static const int STAGE_NUMBER = 4;
-	static const int STAGE[STAGE_NUMBER][3];
-	static const int need_initialized(int game_id){
-		return(IS_AFTER_OPENING(game_id));
-	}
+	static const int STAGE[STAGE_NUMBER][5];
 };
 
-const int StageDefTutorial::STAGE[STAGE_NUMBER][3] = {
-	{0, 0, BIT(1)|BIT(2)|BIT(3)},
-	{200, 250, 0},
-	{400, 250, 0},
-	{600, 250, 0},
+const int StageDefTutorial::STAGE[STAGE_NUMBER][5] = {
+	{0, 0, 0, -1, BIT(1)|BIT(2)|BIT(3)},
+	{200, 250, 0, -1, 0},
+	{400, 250, 0, -1, 0},
+	{600, 250, 0, -1, 0},
 };
 
 #endif // _SCENE_H_MAIN_HPP_

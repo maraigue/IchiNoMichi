@@ -37,38 +37,43 @@ public:
 // ゲームの結果や、メニュー画面におけるステージ選択の結果を引き渡すクラス
 class GameResult{
 	// [ステージID]
-	// ゲーム画面がGameResultを受け取ったとき：特に参照する必要なし
-	// ゲーム画面がGameResultを返すとき：特に変更する必要なし
-	// メニュー画面がGameResultを受け取ったとき：特に参照する必要なし
-	// メニュー画面がGameResultを返すとき：次にプレイするゲームを格納する
+	// メニュー画面で選ばれたゲームのID（マップ上の1点につき
+	// 1つ割り当てられるID）が格納される。ゲーム内から参照する
+	// 必要はない。
 	int stage_id_;
-
+	
+	// [マップID]
+	// どのマップを使っているかを示す。
+	// （チュートリアル選択用マップ、メインマップなど）
+	int map_id_;
+	
+	// [シチュエーションID]
+	// いまどのシーンなのかが格納される。
+	// 0: メニューで選択中
+	// 1: ゲーム開始前
+	// 2: ゲーム中
+	// 3: ゲーム後
+	int stage_situation_;
+	static const int STAGE_SITUATIONS = 4;
+	
 	// [ステージのレベル]
-	// ゲーム画面がGameResultを受け取ったとき：メニュー画面で選ばれたゲームのレベルを示す
-	// ゲーム画面がGameResultを返すとき：特に変更する必要なし
-	// メニュー画面がGameResultを受け取ったとき：特に参照する必要なし
-	// メニュー画面がGameResultを返すとき：特に変更する必要なし
+	// メニュー画面で選ばれたゲームのレベルが格納される。
 	int stage_level_;
 
 	// [ステージの色]
-	// ゲーム画面がGameResultを受け取ったとき：メニュー画面で選ばれたゲームの色を示す
-	// ゲーム画面がGameResultを返すとき：扱い未定
-	// メニュー画面がGameResultを受け取ったとき：特に参照する必要なし
-	// メニュー画面がGameResultを返すとき：特に変更する必要なし
+	// メニュー画面で選ばれたゲームの色が格納される。
 	int stage_color_;
-
+	
 	// [ゲームをプレイした結果]
-	// ゲーム画面がGameResultを受け取ったとき：特に参照する必要なし
-	// ゲーム画面がGameResultを返すとき：ゲームをプレイした結果を返す（成功: 1, 失敗: 0）
-	// メニュー画面がGameResultを受け取ったとき：特に参照する必要なし
-	// メニュー画面がGameResultを返すとき：特に変更する必要なし
+	// ゲーム終了時、この値にゲーム成功ならば1、失敗ならば0を
+	// 指定して返す。
 	int end_status_;
-
+	
 	// [赤の得点]
-	// ゲーム画面がGameResultを受け取ったとき：現時点でのプレイヤーの赤の得点（累積値）を示す
-	// ゲーム画面がGameResultを返すとき：このゲームで獲得した赤の得点を格納する
-	// メニュー画面がGameResultを受け取ったとき：選べるステージを決定するのに利用する
-	// メニュー画面がGameResultを返すとき：特に変更する必要なし
+	// この値に、現時点でのプレイヤーの赤の得点（累積値）が
+	// 格納された状態でゲームに渡される。
+	// ゲーム終了時、この値にこのゲーム中でプレイヤーが獲得した
+	// 赤の得点（上記の値に足した結果ではない）を指定して返す。
 	int r_score_;
 
 	// [緑の得点]
@@ -81,13 +86,14 @@ class GameResult{
 	
 public:
 	GameResult() :
-	  stage_id_(0), stage_level_(0), stage_color_(0), end_status_(0), r_score_(0), g_score_(0), b_score_(0) {}
-	GameResult(int si, int sl, int sc, int st, int r, int g, int b) :
-	  stage_id_(si), stage_level_(sl), stage_color_(sc), end_status_(st), r_score_(r), g_score_(g), b_score_(b) {}
+	  stage_id_(0), map_id_(0), stage_situation_(0), stage_level_(0), stage_color_(0), end_status_(0), r_score_(0), g_score_(0), b_score_(0) {}
 	
 	int stage_id(){ return stage_id_; }
 	void stage_id(int si){ stage_id_ = si; }
-	
+	int map_id(){ return map_id_; }
+	void map_id(int mi){ map_id_ = mi; }
+	int stage_situation(){ return stage_situation_; }
+	void stage_situation(int ss){ stage_situation_ = ss; }
 	int stage_level(){ return stage_level_; }
 	void stage_level(int sl){ stage_level_ = sl; }
 	int stage_color(){ return stage_color_; }
