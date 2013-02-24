@@ -1,78 +1,97 @@
+/*
+	by rocca
+	   -> 2013/02/11
+*/
+
 #define RO_X_CNT 12
 #define RO_Y_CNT 8
-int now_br;
 
-// ‰æ‘œID
+// ç”»åƒID
 enum{
-	LO_SP_BG,
-	LO_SP_FB,
+	RO_SP_BG,
+	RO_SP_FB,
 
-	LO_SP_BR_R1,
-	LO_SP_BR_R2,
-	LO_SP_BR_R3,
+	RO_SP_BR_R1,
+	RO_SP_BR_R2,
+	RO_SP_BR_R3,
 
-	LO_SP_BR_G1,
-	LO_SP_BR_G2,
-	LO_SP_BR_G3,
+	RO_SP_BR_G1,
+	RO_SP_BR_G2,
+	RO_SP_BR_G3,
 
-	LO_SP_BR_B1,
-	LO_SP_BR_B2,
-	LO_SP_BR_B3,
+	RO_SP_BR_B1,
+	RO_SP_BR_B2,
+	RO_SP_BR_B3,
 
-	LO_SP_LOSE1,
-	LO_SP_LOSE2,
-	LO_SP_LOSE3,
-	LO_SP_LOSE4,
+	RO_SP_LOSE1,
+	RO_SP_LOSE2,
+	RO_SP_LOSE3,
+	RO_SP_LOSE4,
 
-	_LO_SP_END, // ˆêŠ‡“Ç‚İ‚İSP‚±‚±‚Ü‚Å
+	RO_SP_OK1,
+	RO_SP_OK2,
+	RO_SP_OK3,
+	RO_SP_OK4,
+	RO_SP_OK5,
 
-	LO_SP_ICHI = _LO_SP_END,	// •ªŠ„“ÇŠJn,
-	_LO_SP_ALL_END,
+	RO_SP_NG1,
+	RO_SP_NG2,
+
+	RO_SP_T1,	// tutorial
+	RO_SP_T2,	// start
+	RO_SP_T3,	// wark
+	RO_SP_T4,	// goal
+
+	_RO_SP_END, // ä¸€æ‹¬èª­ã¿è¾¼ã¿SPã“ã“ã¾ã§
+
+	RO_SP_ICHI = _RO_SP_END,	// åˆ†å‰²èª­è¾¼é–‹å§‹,
+	_RO_SP_ALL_END,
 };
-static int cols[] = {LO_SP_BR_R1, LO_SP_BR_G1, LO_SP_BR_B1};
+static int cols[] = {RO_SP_BR_R1, RO_SP_BR_G1, RO_SP_BR_B1};
 
-// Œø‰Ê‰¹ID
-// ŠeF‚Wíƒ‰ƒ“ƒ_ƒ€ƒ‰ƒ“ƒ_ƒ€
+// åŠ¹æœéŸ³ID
+// å„è‰²ï¼˜ç¨®ãƒ©ãƒ³ãƒ€ãƒ ãƒ©ãƒ³ãƒ€ãƒ 
 enum{
-	LO_SE_RK1,	// ‚ ‚©
-	LO_SE_RK2,	//
-	LO_SE_RK3,	//
-	LO_SE_RK4,
-	LO_SE_RK5,
-	LO_SE_RK6,
-	LO_SE_RK7,
-	LO_SE_RK8,
+	RO_SE_RK1,	// ã‚ã‹
+	RO_SE_RK2,	//
+	RO_SE_RK3,	//
+	RO_SE_RK4,
+	RO_SE_RK5,
+	RO_SE_RK6,
+	RO_SE_RK7,
+	RO_SE_RK8,
 
-	LO_SE_GK1,	// ‚İ‚Ç‚è
-	LO_SE_GK2,	// 
-	LO_SE_GK3,	// 
-	LO_SE_GK4,
-	LO_SE_GK5,
-	LO_SE_GK6,
-	LO_SE_GK7,
-	LO_SE_GK8,
+	RO_SE_GK1,	// ã¿ã©ã‚Š
+	RO_SE_GK2,	// 
+	RO_SE_GK3,	// 
+	RO_SE_GK4,
+	RO_SE_GK5,
+	RO_SE_GK6,
+	RO_SE_GK7,
+	RO_SE_GK8,
 
-	LO_SE_BK1,	// ‚ ‚¨
-	LO_SE_BK2,	// 
-	LO_SE_BK3,	// 
-	LO_SE_BK4,
-	LO_SE_BK5,
-	LO_SE_BK6,
-	LO_SE_BK7,
-	LO_SE_BK8,
+	RO_SE_BK1,	// ã‚ãŠ
+	RO_SE_BK2,	// 
+	RO_SE_BK3,	// 
+	RO_SE_BK4,
+	RO_SE_BK5,
+	RO_SE_BK6,
+	RO_SE_BK7,
+	RO_SE_BK8,
 
-	LO_BGM_1,
-	LO_BGM_2,
-	LO_BGM_3,
-	LO_BGM_T,
+	RO_BGM_1,
+	RO_BGM_2,
+	RO_BGM_3,
+	RO_BGM_T,
 
-//	LO_SE_CLEAR,
-//	LO_SE_LOSE,
-	_LO_SE_END
+	RO_SE_START,
+	RO_SE_CLEAR,
+	_RO_SE_END
 };
-static int ses[] = {LO_SE_RK1, LO_SE_GK1, LO_SE_BK1};
-static int bgms[] = {LO_BGM_T,LO_BGM_1,LO_BGM_1,LO_BGM_2, LO_BGM_3};
-// 0‚È‚µ@123F‚ ‚è(Œü‚«) 0x10F(0R1G2B)
+static int ses[] = {RO_SE_RK1, RO_SE_GK1, RO_SE_BK1};
+static int bgms[] = {RO_BGM_T,RO_BGM_1,RO_BGM_1,RO_BGM_2, RO_BGM_3};
+
+// 0ãªã—ã€€123ï¼šã‚ã‚Š(å‘ã) 0x10è‰²(0R1G2B)
 static int roads[RO_Y_CNT][RO_X_CNT] = {
 	{0,0,0,0,0,0,0,0,0,0,0,0},	// 
 	{0,0,0,0,0,0,0,0,0,0,0,0},
@@ -94,73 +113,49 @@ static int roads_se[RO_Y_CNT][RO_X_CNT] = {
 	{0,0,0,0,0,0,0,0,0,0,0,0},
 };
 
-// Äinit—p
-static int tmp_roads[RO_Y_CNT][RO_X_CNT] = {
-	{0,0,0,0,0,0,0,0,0,0,0,0},	// 
-	{0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0},	// 
-	{0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0},
-};
-static int tmp_roads_se[RO_Y_CNT][RO_X_CNT] = {
-	{0,0,0,0,0,0,0,0,0,0,0,0},	// 
-	{0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0},	// 
-	{0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0},
-};
-// Œ»İ‚Ì—İÏó‹µ
-static int now_n[RO_Y_CNT] = { 11, 11, 11, 11, 11, 11, 11, 11};
-
 #define STBG_MAX 5;
 static char pix_bgs[][256] = {
 	"res/bg/tutorial_rh.png",
-	"res/bg/stage1_R_bg_rh.png",
+	"res/bg/stage1_bg_rh.png",
 	"res/bg/stage2_R_bg_rh.png",
 	"res/bg/stage3_R_bg_rh.png",
 	"res/bg/stage4_R_bg_rh.png",
 
 	"res/bg/tutorial_rh.png",
-	"res/bg/stage1_G_bg_rh.png",
+	"res/bg/stage1_bg_rh.png",
 	"res/bg/stage2_G_bg_rh.png",
 	"res/bg/stage3_G_bg_rh.png",
 	"res/bg/stage4_G_bg_rh.png",
 
 
 	"res/bg/tutorial_rh.png",
-	"res/bg/stage1_B_bg_rh.png",
+	"res/bg/stage1_bg_rh.png",
 	"res/bg/stage2_B_bg_rh.png",
 	"res/bg/stage3_B_bg_rh.png",
 	"res/bg/stage4_R_bg_rh.png",
 };
 static char pix_fgs[][256] = {
 
-	"",
-	"res/bg/stage1_R_fg_rh.png",
-	"res/bg/stage2_R_fg_rh.png",
-	"res/bg/stage3_R_fg_rh.png",
-	"res/bg/stage4_R_fg_rh.png",
+	"no",
+	"res/bg/stage1_fg.png",
+	"res/bg/stage2_R_fg.png",
+	"res/bg/stage3_R_fg.png",
+	"res/bg/stage4_R_fg.png",
 
-	""
-	"res/bg/stage1_G_fg_rh.png",
-	"res/bg/stage2_G_fg_rh.png",
-	"res/bg/stage3_G_fg_rh.png",
-	"res/bg/stage4_G_fg_rh.png",
+	"no"
+	"res/bg/stage1_fg.png",
+	"res/bg/stage2_G_fg.png",
+	"res/bg/stage3_G_fg.png",
+	"res/bg/stage4_G_fg.png",
 
-	""
-	"res/bg/stage1_B_fg_rh.png",
-	"res/bg/stage2_B_fg_rh.png",
-	"res/bg/stage3_B_fg_rh.png",
-	"res/bg/stage4_B_fg_rh.png",
+	"no"
+	"res/bg/stage1_fg.png",
+	"res/bg/stage2_B_fg.png",
+	"res/bg/stage3_B_fg.png",
+	"res/bg/stage4_B_fg.png",
 
 };
-static char pixs_R[_LO_SP_ALL_END][256] = {
+static char ro_pixs[_RO_SP_ALL_END][256] = {
 
 	"",
 	"",
@@ -182,12 +177,26 @@ static char pixs_R[_LO_SP_ALL_END][256] = {
 	"res/img/yes_on.png",
 	"res/img/no_on.png",
 
+	"res/img/R_good1.png",
+	"res/img/R_good2.png",
+	"res/img/R_good3.png",
+	"res/img/R_good4.png",
+	"res/img/R_good5.png",
+
+	"res/img/R_bad1.png",
+	"res/img/R_bad2.png",
+
+	"res/img/tutorial.png",
+	"res/img/tutorial.png",
+	"res/img/tutorial.png",
+	"res/img/tutorial.png",
+
 	"res/img/ch1.png",
 };
 
 
-static char sounds[_LO_SE_END][256] = {
-	"res/se/Red01.mp3",	// ‚ ‚©
+static char sounds[_RO_SE_END][256] = {
+	"res/se/Red01.mp3",		// RO_SE_RK1~
 	"res/se/Red02.mp3",
 	"res/se/Red03.mp3",
 	"res/se/Red04.mp3",
@@ -196,7 +205,7 @@ static char sounds[_LO_SE_END][256] = {
 	"res/se/Red07.mp3",
 	"res/se/Red08.mp3",
 
-	"res/se/Green01.mp3",	// ‚İ‚Ç‚è
+	"res/se/Green01.mp3",	// RO_SE_GK1~
 	"res/se/Green02.mp3",
 	"res/se/Green03.mp3",
 	"res/se/Green04.mp3",
@@ -205,7 +214,7 @@ static char sounds[_LO_SE_END][256] = {
 	"res/se/Green07.mp3",
 	"res/se/Green08.mp3",
 
-	"res/se/Blue01.mp3",	// ‚ ‚¨
+	"res/se/Blue01.mp3",	// RO_SE_BK1~
 	"res/se/Blue02.mp3",
 	"res/se/Blue03.mp3",
 	"res/se/Blue04.mp3",
@@ -214,61 +223,71 @@ static char sounds[_LO_SE_END][256] = {
 	"res/se/Blue07.mp3",
 	"res/se/Blue08.mp3",
 
-	"res/bgm/Stage1.mp3",
+	"res/bgm/Stage1.mp3",	// RO_BGM_1~
 	"res/bgm/Stage2.mp3",
 	"res/bgm/Stage3.mp3",
-	"res/bgm/Tutorial.mp3",
-//	"res/se/se_003.wav",
-//	"res/se/se_003.wav",
+	"res/bgm/Tutorial.mp3", // RO_BGM_T
+
+	"res/bgm/Jingle/Start.mp3",	// RO_SE_START
+	"res/bgm/Jingle/Clear.mp3",	// RO_SE_CLEAR
+
 };
 
-SPRITE spd[_LO_SP_ALL_END] = {
-	{ 0,0,   0,   0, 800, 600}, // bg_b
-	{ 0,0,   0,   0, 800, 600}, // bg_f
+SPRITE spd[_RO_SP_ALL_END] = {
+	{ 0,0, 0,  0,   0, 800, 600}, // RO_SP_BG
+	{ 0,0, 0,  0,   0, 800, 600}, // RO_SP_FB
 
-	{ 0,0,   0,   0, 50, 50},	// ƒuƒƒbƒNiŠî–{ƒTƒCƒYƒf[ƒ^j
-	{ 0,0,   0,   0, 50, 50},	// ƒuƒƒbƒNiŠî–{ƒTƒCƒYƒf[ƒ^j
-	{ 0,0,   0,   0, 50, 50},	// ƒuƒƒbƒNiŠî–{ƒTƒCƒYƒf[ƒ^j
-	{ 0,0,   0,   0, 50, 50},	// ƒuƒƒbƒNiŠî–{ƒTƒCƒYƒf[ƒ^j
-	{ 0,0,   0,   0, 50, 50},	// ƒuƒƒbƒNiŠî–{ƒTƒCƒYƒf[ƒ^j
-	{ 0,0,   0,   0, 50, 50},	// ƒuƒƒbƒNiŠî–{ƒTƒCƒYƒf[ƒ^j
-	{ 0,0,   0,   0, 50, 50},	// ƒuƒƒbƒNiŠî–{ƒTƒCƒYƒf[ƒ^j
-	{ 0,0,   0,   0, 50, 50},	// ƒuƒƒbƒNiŠî–{ƒTƒCƒYƒf[ƒ^j
-	{ 0,0,   0,   0, 50, 50},	// ƒuƒƒbƒNiŠî–{ƒTƒCƒYƒf[ƒ^j
+	{ 0,0, 0,  0,   0, 50, 50},	// RO_SP_BR_R1~
+	{ 0,0, 0,  0,   0, 50, 50},	//
+	{ 0,0, 0,  0,   0, 50, 50},	//
+	{ 0,0, 0,  0,   0, 50, 50},	//
+	{ 0,0, 0,  0,   0, 50, 50},	//
+	{ 0,0, 0,  0,   0, 50, 50},	//
+	{ 0,0, 0,  0,   0, 50, 50},	//
+	{ 0,0, 0,  0,   0, 50, 50},	//
+	{ 0,0, 0,  0,   0, 50, 50},	//
 
-	{ 0,0, 128, 100,545, 80},	// ƒuƒƒbƒNiŠî–{ƒTƒCƒYƒf[ƒ^j
-	{ 0,0, 440, 240,158, 55},	// ƒuƒƒbƒNiŠî–{ƒTƒCƒYƒf[ƒ^j
-	{ 0,0, 105, 420,190, 65},	// ƒuƒƒbƒNiŠî–{ƒTƒCƒYƒf[ƒ^j
-	{ 0,0, 505, 420,190, 65},	// ƒuƒƒbƒNiŠî–{ƒTƒCƒYƒf[ƒ^j
+	{ 0,0, 0,128, 152,545, 80},	//
+	{ 0,0, 0,321, 300,158, 55},	//
+	{ 0,0, 0,130, 380,190, 65},	//
+	{ 0,0, 0,480, 380,190, 65},	//
 
-	{ 0,0, 160, 100, 46, 63},	// ƒLƒƒƒ‰(num=Œü‚« x=•à‚«ƒpƒ^[ƒ“) 
+	{ 0,0, 0,  0,   0, 80, 50},	// RO_SP_OK1~
+	{ 0,0, 0,  0,   0, 80, 50},	//
+	{ 0,0, 0,  0,   0, 80, 50},	//
+	{ 0,0, 0,  0,   0, 80, 50},	//
+	{ 0,0, 0,  0,   0, 80, 50},	//
+
+	{ 0,0, 0,  0,   0, 80, 50},	// RO_SP_NG1~
+	{ 0,0, 0,  0,   0, 80, 50},	//
+
+	{ 0,0, 0,100, 160,600,100},	// RO_SP_R1~
+	{ 0,0, 0,100, 160,600,100},	//
+	{ 0,0, 0,100, 160,600,100},	//
+	{ 0,0, 0,100, 160,600,100},	//
+
+	{ 0,0, 0,160, 100, 46, 63},	// RO_SP_ICHI(num=å‘ã x=æ­©ããƒ‘ã‚¿ãƒ¼ãƒ³) 
 };
 
+#define I_PATMAX 27
+#define I_PATS   9
+#define I_MOVS   3
 
-int ichi_num[8][5];		// Œü‚«@ƒpƒ^[ƒ“
+int ichi_num[I_PATS][I_MOVS];
+int se_num[_RO_SE_END];
+int sp_num[_RO_SP_END];
 
-int se_num[_LO_SE_END]; // ‰¹”Ô†
-int sp_num[_LO_SP_END];	// ‰æ‘œ”Ô†
-
-// ŠeˆÊ’uÀ•W
+// å„ãƒã‚¹ä½ç½®åº§æ¨™
 static int roadx[RO_X_CNT] = { 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100};
 static int roady[RO_Y_CNT]  = { 115, 165, 215, 265, 315, 365, 415, 465};
 
-// ƒŒƒxƒ‹
-static LO_LEVEL levels[] = { 
+// ãƒ¬ãƒ™ãƒ«
+static RO_LEVEL levels[] = { 
 	{0, 8},
-	{2, 8},
-	{6, 12},
-	{10,12},
-	{14,16},
-	{18,16},
-	{22,20},
-	{26,20},
-	{32,24},
+	{4, 8},
+	{12,12},
+	{24,16},
+	{32,20},
+	{44,24},
 	{-1,-1},
 };
-
-#define I_PATMAX 27 //40
-#define I_PATS   8
-#define I_MOVS   3   //5
-//
