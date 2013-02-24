@@ -187,9 +187,9 @@ static char ro_pixs[_RO_SP_ALL_END][256] = {
 	"res/img/R_bad2.png",
 
 	"res/img/tutorial.png",
-	"res/img/tutorial.png",
-	"res/img/tutorial.png",
-	"res/img/tutorial.png",
+	"res/img/start.png",
+	"res/img/walk.png",
+	"res/img/goal.png",
 
 	"res/img/ch1.png",
 };
