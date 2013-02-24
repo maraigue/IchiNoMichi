@@ -1,7 +1,6 @@
-
 /*
 	by rocca
-	   -> 2013/01/25
+	   -> 2013/02/11
 */
 
 #pragma once
@@ -10,90 +9,90 @@
 #define SC_WIDTH 800
 #define SC_HEIGHT 600
 
-// —‰ºƒuƒƒbƒNƒf[ƒ^
+// è½ä¸‹ãƒ–ãƒ­ãƒƒã‚¯ãƒ‡ãƒ¼ã‚¿
 typedef struct {
-	int k;	// ‚Ç‚ÌyˆÊ’u
+	int k;		// ã©ã®yä½ç½®
 	int x;
-	int type;	// 0:¶˜AŒ‹ 1:ã˜AŒ‹@2:‰º˜AŒ‹
-	int ok;	// —‰ºƒuƒƒbƒN ->1:ˆÚ“®’† -1:—‰º’† 0:‚È‚µ ¸”sƒuƒƒbƒN->ƒ¿’l
-	int col;	// F RGB(0~2)
+	int type;	// 0:å·¦é€£çµ 1:ä¸Šé€£çµã€€2:ä¸‹é€£çµ
+	int ok;		// è½ä¸‹ãƒ–ãƒ­ãƒƒã‚¯ ->1:ç§»å‹•ä¸­ -1:è½ä¸‹ä¸­ 0:ãªã— å¤±æ•—ãƒ–ãƒ­ãƒƒã‚¯->Î±å€¤
+	int col;	// è‰² RGB(0~2)
 }BLOCK;
 
-// “ïˆÕ“x
+// é›£æ˜“åº¦
 typedef struct {
-	int road;	// ‚»‚±‚ÉŠ‚éƒuƒƒbƒN”
-	int speed;	// ‘¬“x
-}LO_LEVEL;
+	int road;	// ãã“ã«è‡³ã‚‹ãƒ–ãƒ­ãƒƒã‚¯æ•°
+	int speed;	// é€Ÿåº¦
+}RO_LEVEL;
 
-// ‰æ‘œƒf[ƒ^
+// ç”»åƒãƒ‡ãƒ¼ã‚¿
 typedef struct {
-	int num, pat;	// ‚¢‚¿‚Ìê‡ƒnƒ“ƒhƒ‹Eƒpƒ^[ƒ“
+	int num, pat;
+	int efe;
 	int x,y;
 	int w,h;
-	
 }SPRITE;
-// is
+
+// é€²è¡Œ
 enum {
-	LO_INI,
-	LO_GAME,
-	LO_CLEAR,
-	LO_LOSE,
+	RO_INI,
+	RO_GAME_S,
+	RO_GAME,
+	RO_CLEAR,
 
-	LO_END,
+	RO_END,
 
-	LO_GAMEOVER,
+	RO_GAMEOVER,
 };
 
 class GameRoad : public Scene {
 public:
-	int cond;	// 0:ƒNƒ‰ƒX‰‰ñ 1:’Êí 2:end“®ì 3:Š®‘Send
-	int time;		// ƒg[ƒ^ƒ‹ŠÔ
-	int miss;		// ƒ~ƒX
-	int s_col;		// ƒJƒ‰[
-	int stage;		// ƒXƒe[ƒW
+
+	int cond;		
+	int time;		// ãƒˆãƒ¼ã‚¿ãƒ«æ™‚é–“
+	int miss;		// ãƒŸã‚¹
+	int s_col;		// ã‚«ãƒ©ãƒ¼
+	int stage;		// ã‚¹ãƒ†ãƒ¼ã‚¸
 	int get_rgb[3]; 
 	int alpha;
-	int move_time; // ƒuƒƒbƒNˆÚ“®ŠÔ
-	int next_time;	// ŸƒuƒƒbƒN“§‰ßŠÔ
-	int all_road;	// ‘ƒZƒbƒgƒuƒƒbƒN”
+	int move_time; // ãƒ–ãƒ­ãƒƒã‚¯ç§»å‹•æ™‚é–“
 
-	int now_level;	// “ïˆÕ“x
-	int lose_cnt;	// ”s–kƒ~ƒX”
+	int all_road;	// ç·ã‚»ãƒƒãƒˆãƒ–ãƒ­ãƒƒã‚¯æ•°
+	int head_x;		// æœ€å‰
+	int now_level;	// é›£æ˜“åº¦
 
-	int lo_key;		// ‰Ÿ‰º’†ƒL[
-	int myroad;		// ÅI“¹i—ñj
+	int once_btn;	//é€£æ‰“é˜²æ­¢ãƒ•ãƒ©ã‚° 0:ãªã— 1:ã†ãˆã€€2:ã—ãŸ 4:Enter
+	BLOCK block;		// è¡¨ç¤ºè½ä¸‹ãƒ–ãƒ­ãƒƒã‚¯
+	BLOCK del_block;	// å¤±æ•—è½ä¸‹ãƒ–ãƒ­ãƒƒã‚¯
 
-	int once_btn;	//˜A‘Å–h~ƒtƒ‰ƒO 0:‚È‚µ 1:‚¤‚¦@2:‚µ‚½ 4:Enter
-	BLOCK block;		// •\¦—‰ºƒuƒƒbƒN
-	BLOCK del_block;	// ¸”s—‰ºƒuƒƒbƒN
-
-	int ch_time;	// ‚¢‚¿ƒpƒ^[ƒ“ƒ`ƒFƒ“ƒWŠÔ
-	int ch_movetime;// ‚¢‚¿ˆÚ“®ŠÔ
-	int ch_mode;	// 0: ƒQ[ƒ€’†@1:ƒS[ƒ‹‚Ö
-	int ch_walk;	// ˆÚ“®î•ñ
-	POINT reg;		// ‚¢‚¿‘«Œ³À•W
+	int ch_time;	// ã„ã¡ãƒ‘ã‚¿ãƒ¼ãƒ³ãƒã‚§ãƒ³ã‚¸æ™‚é–“
+	int ch_movetime;// ã„ã¡ç§»å‹•æ™‚é–“
+	int ch_mode;	// 0: ã‚²ãƒ¼ãƒ ä¸­ã€€1:ã‚´ãƒ¼ãƒ«ã¸
+	int ch_walk;	// ç§»å‹•æƒ…å ±
+	POINT reg;		// ã„ã¡è¶³å…ƒåº§æ¨™
 
 	char Key[ 256 ] ;
+
+	int efe_ok;
 	GameResult ro_g_res;
+
 public:
 	GameRoad(void);
+	~GameRoad(void);
 	void init(GameResult * result);
 	void draw(void);
 	GameResult * update(void);
 
 	void newBlock(void);
-	void setNewBlockTime(void);
 	void roadSetCheck(void);
 	int clearCheck(void);
-	int loseCheck(void);
 	void Failureroad(void);
 
 	void chMoveSet(void);
 	void chMove(void);
 
 	void chReg(SPRITE *sp);
-	void LoadDel(void);
-	void RoadEnd(void);
-	void RoadGameOverEnd(void);
-};
+	void DataDel(void);
+	void DataLoad(void);
 
+	void efeSet(int mode, int pos);
+};
