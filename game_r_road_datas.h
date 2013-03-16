@@ -6,7 +6,7 @@
 #define RO_X_CNT 12
 #define RO_Y_CNT 8
 
-// ç”»åƒID
+// ‰æ‘œID
 enum{
 	RO_SP_BG,
 	RO_SP_FB,
@@ -42,17 +42,17 @@ enum{
 	RO_SP_T3,	// wark
 	RO_SP_T4,	// goal
 
-	_RO_SP_END, // ä¸€æ‹¬èª­ã¿è¾¼ã¿SPã“ã“ã¾ã§
+	_RO_SP_END, // ˆêŠ‡“Ç‚İ‚İSP‚±‚±‚Ü‚Å
 
-	RO_SP_ICHI = _RO_SP_END,	// åˆ†å‰²èª­è¾¼é–‹å§‹,
+	RO_SP_ICHI = _RO_SP_END,	// •ªŠ„“ÇŠJn,
 	_RO_SP_ALL_END,
 };
 static int cols[] = {RO_SP_BR_R1, RO_SP_BR_G1, RO_SP_BR_B1};
 
-// åŠ¹æœéŸ³ID
-// å„è‰²ï¼˜ç¨®ãƒ©ãƒ³ãƒ€ãƒ ãƒ©ãƒ³ãƒ€ãƒ 
+// Œø‰Ê‰¹ID
+// ŠeF‚Wíƒ‰ƒ“ƒ_ƒ€ƒ‰ƒ“ƒ_ƒ€
 enum{
-	RO_SE_RK1,	// ã‚ã‹
+	RO_SE_RK1,	// ‚ ‚©
 	RO_SE_RK2,	//
 	RO_SE_RK3,	//
 	RO_SE_RK4,
@@ -61,7 +61,7 @@ enum{
 	RO_SE_RK7,
 	RO_SE_RK8,
 
-	RO_SE_GK1,	// ã¿ã©ã‚Š
+	RO_SE_GK1,	// ‚İ‚Ç‚è
 	RO_SE_GK2,	// 
 	RO_SE_GK3,	// 
 	RO_SE_GK4,
@@ -70,7 +70,7 @@ enum{
 	RO_SE_GK7,
 	RO_SE_GK8,
 
-	RO_SE_BK1,	// ã‚ãŠ
+	RO_SE_BK1,	// ‚ ‚¨
 	RO_SE_BK2,	// 
 	RO_SE_BK3,	// 
 	RO_SE_BK4,
@@ -91,7 +91,7 @@ enum{
 static int ses[] = {RO_SE_RK1, RO_SE_GK1, RO_SE_BK1};
 static int bgms[] = {RO_BGM_T,RO_BGM_1,RO_BGM_1,RO_BGM_2, RO_BGM_3};
 
-// 0ãªã—ã€€123ï¼šã‚ã‚Š(å‘ã) 0x10è‰²(0R1G2B)
+// 0‚È‚µ@123F‚ ‚è(Œü‚«) 0x10F(0R1G2B)
 static int roads[RO_Y_CNT][RO_X_CNT] = {
 	{0,0,0,0,0,0,0,0,0,0,0,0},	// 
 	{0,0,0,0,0,0,0,0,0,0,0,0},
@@ -266,7 +266,7 @@ SPRITE spd[_RO_SP_ALL_END] = {
 	{ 0,0, 0,100, 160,600,100},	//
 	{ 0,0, 0,100, 160,600,100},	//
 
-	{ 0,0, 0,160, 100, 46, 63},	// RO_SP_ICHI(num=å‘ã x=æ­©ããƒ‘ã‚¿ãƒ¼ãƒ³) 
+	{ 0,0, 0,160, 100, 46, 63},	// RO_SP_ICHI(num=Œü‚« x=•à‚«ƒpƒ^[ƒ“) 
 };
 
 #define I_PATMAX 27
@@ -277,11 +277,11 @@ int ichi_num[I_PATS][I_MOVS];
 int se_num[_RO_SE_END];
 int sp_num[_RO_SP_END];
 
-// å„ãƒã‚¹ä½ç½®åº§æ¨™
+// Šeƒ}ƒXˆÊ’uÀ•W
 static int roadx[RO_X_CNT] = { 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100};
 static int roady[RO_Y_CNT]  = { 115, 165, 215, 265, 315, 365, 415, 465};
 
-// ãƒ¬ãƒ™ãƒ«
+// ƒŒƒxƒ‹
 static RO_LEVEL levels[] = { 
 	{0, 8},
 	{4, 8},

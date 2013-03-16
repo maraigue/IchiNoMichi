@@ -9,22 +9,22 @@
 #define SC_WIDTH 800
 #define SC_HEIGHT 600
 
-// è½ä¸‹ãƒ–ãƒ­ãƒƒã‚¯ãƒ‡ãƒ¼ã‚¿
+// —‰ºƒuƒƒbƒNƒf[ƒ^
 typedef struct {
-	int k;		// ã©ã®yä½ç½®
+	int k;		// ‚Ç‚ÌyˆÊ’u
 	int x;
-	int type;	// 0:å·¦é€£çµ 1:ä¸Šé€£çµã€€2:ä¸‹é€£çµ
-	int ok;		// è½ä¸‹ãƒ–ãƒ­ãƒƒã‚¯ ->1:ç§»å‹•ä¸­ -1:è½ä¸‹ä¸­ 0:ãªã— å¤±æ•—ãƒ–ãƒ­ãƒƒã‚¯->Î±å€¤
-	int col;	// è‰² RGB(0~2)
+	int type;	// 0:¶˜AŒ‹ 1:ã˜AŒ‹@2:‰º˜AŒ‹
+	int ok;		// —‰ºƒuƒƒbƒN ->1:ˆÚ“®’† -1:—‰º’† 0:‚È‚µ ¸”sƒuƒƒbƒN->ƒ¿’l
+	int col;	// F RGB(0~2)
 }BLOCK;
 
-// é›£æ˜“åº¦
+// “ïˆÕ“x
 typedef struct {
-	int road;	// ãã“ã«è‡³ã‚‹ãƒ–ãƒ­ãƒƒã‚¯æ•°
-	int speed;	// é€Ÿåº¦
+	int road;	// ‚»‚±‚ÉŠ‚éƒuƒƒbƒN”
+	int speed;	// ‘¬“x
 }RO_LEVEL;
 
-// ç”»åƒãƒ‡ãƒ¼ã‚¿
+// ‰æ‘œƒf[ƒ^
 typedef struct {
 	int num, pat;
 	int efe;
@@ -32,7 +32,7 @@ typedef struct {
 	int w,h;
 }SPRITE;
 
-// é€²è¡Œ
+// is
 enum {
 	RO_INI,
 	RO_GAME_S,
@@ -48,27 +48,27 @@ class GameRoad : public Scene {
 public:
 
 	int cond;		
-	int time;		// ãƒˆãƒ¼ã‚¿ãƒ«æ™‚é–“
-	int miss;		// ãƒŸã‚¹
-	int s_col;		// ã‚«ãƒ©ãƒ¼
-	int stage;		// ã‚¹ãƒ†ãƒ¼ã‚¸
+	int time;		// ƒg[ƒ^ƒ‹ŠÔ
+	int miss;		// ƒ~ƒX
+	int s_col;		// ƒJƒ‰[
+	int stage;		// ƒXƒe[ƒW
 	int get_rgb[3]; 
 	int alpha;
-	int move_time; // ãƒ–ãƒ­ãƒƒã‚¯ç§»å‹•æ™‚é–“
+	int move_time; // ƒuƒƒbƒNˆÚ“®ŠÔ
 
-	int all_road;	// ç·ã‚»ãƒƒãƒˆãƒ–ãƒ­ãƒƒã‚¯æ•°
-	int head_x;		// æœ€å‰
-	int now_level;	// é›£æ˜“åº¦
+	int all_road;	// ‘ƒZƒbƒgƒuƒƒbƒN”
+	int head_x;		// Å‘O
+	int now_level;	// “ïˆÕ“x
 
-	int once_btn;	//é€£æ‰“é˜²æ­¢ãƒ•ãƒ©ã‚° 0:ãªã— 1:ã†ãˆã€€2:ã—ãŸ 4:Enter
-	BLOCK block;		// è¡¨ç¤ºè½ä¸‹ãƒ–ãƒ­ãƒƒã‚¯
-	BLOCK del_block;	// å¤±æ•—è½ä¸‹ãƒ–ãƒ­ãƒƒã‚¯
+	int once_btn;	//˜A‘Å–h~ƒtƒ‰ƒO 0:‚È‚µ 1:‚¤‚¦@2:‚µ‚½ 4:Enter
+	BLOCK block;		// •\¦—‰ºƒuƒƒbƒN
+	BLOCK del_block;	// ¸”s—‰ºƒuƒƒbƒN
 
-	int ch_time;	// ã„ã¡ãƒ‘ã‚¿ãƒ¼ãƒ³ãƒã‚§ãƒ³ã‚¸æ™‚é–“
-	int ch_movetime;// ã„ã¡ç§»å‹•æ™‚é–“
-	int ch_mode;	// 0: ã‚²ãƒ¼ãƒ ä¸­ã€€1:ã‚´ãƒ¼ãƒ«ã¸
-	int ch_walk;	// ç§»å‹•æƒ…å ±
-	POINT reg;		// ã„ã¡è¶³å…ƒåº§æ¨™
+	int ch_time;	// ‚¢‚¿ƒpƒ^[ƒ“ƒ`ƒFƒ“ƒWŠÔ
+	int ch_movetime;// ‚¢‚¿ˆÚ“®ŠÔ
+	int ch_mode;	// 0: ƒQ[ƒ€’†@1:ƒS[ƒ‹‚Ö
+	int ch_walk;	// ˆÚ“®î•ñ
+	POINT reg;		// ‚¢‚¿‘«Œ³À•W
 
 	char Key[ 256 ] ;
 

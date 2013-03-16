@@ -18,7 +18,7 @@ GameRoad::~GameRoad(void)
 	DataDel();
 }
 
-//ã€€ãƒ‡ãƒ¼ã‚¿ç ´æ£„
+//@ƒf[ƒ^”jŠü
 void GameRoad::DataDel(void)
 {
 	for(int i=0; i<_RO_SP_END; i++){
@@ -34,7 +34,7 @@ void GameRoad::DataDel(void)
 	}
 }
 
-//ã€€ãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
+//@ƒf[ƒ^“Ç‚İ‚İ
 void GameRoad::DataLoad(void)
 {
 	int i;
@@ -43,19 +43,19 @@ void GameRoad::DataLoad(void)
 	spd[RO_SP_BG].num = LoadGraph(pix_bgs[c]);
 	spd[RO_SP_FB].num = LoadGraph(pix_fgs[c]);
 
-	// ç”»åƒãƒ­ãƒ¼ãƒ‰
+	// ‰æ‘œƒ[ƒh
 	for(i=RO_SP_BR_R1; i<_RO_SP_END; i++){
 		spd[i].num = LoadGraph(ro_pixs[i]);
 		spd[i].pat = 0;
 	}
 			
 
-	// åŠ¹æœéŸ³ãƒ­ãƒ¼ãƒ‰
+	// Œø‰Ê‰¹ƒ[ƒh
 	for(i=0; i<_RO_SE_END; i++){
 		se_num[i] = LoadSoundMem(sounds[i]);
 	}
 
-	// ã„ã¡ãƒ‘ã‚¿ãƒ¼ãƒ³ç”»åƒ
+	// ‚¢‚¿ƒpƒ^[ƒ“‰æ‘œ
 	int tmp[I_PATMAX];
 	int i_c = 0;
 	LoadDivGraph(ro_pixs[RO_SP_ICHI], I_PATMAX, I_MOVS, I_PATS, spd[RO_SP_ICHI].w, spd[RO_SP_ICHI].h,tmp);
@@ -113,19 +113,19 @@ void GameRoad::init(GameResult * result)
 }
 
 
-// æ–°è¦ãƒ–ãƒ­ãƒƒã‚¯ç”Ÿæˆ
+// V‹KƒuƒƒbƒN¶¬
 void GameRoad::newBlock()
 {	
-	// i = æ–°è¦ãƒ–ãƒ­ãƒƒã‚¯æƒ…å ±æ ¼ç´å ´æ‰€
+	// i = V‹KƒuƒƒbƒNî•ñŠi”[êŠ
 	if(block.ok == 1){ return; }
 	if(efe_ok == 1){ return; }
-	// å‡ºã›ã‚‹ãƒ–ãƒ­ãƒƒã‚¯åˆ¤å®š
-	// 0x00:æ¨ª
-	// 0x01(0x04):ä¸Š
-	// 0x02(0x08):ä¸‹
+	// o‚¹‚éƒuƒƒbƒN”»’è
+	// 0x00:‰¡
+	// 0x01(0x04):ã
+	// 0x02(0x08):‰º
 	int set_t = 0;
 	int c = 0x02, b = 0, bb = 0;
-	// æœ€å‰xæ¤œç´¢
+	// Å‘OxŒŸõ
 	if(head_x > -1){
 		for(int i=0; i<RO_Y_CNT; i++){
 			if(roads[i][head_x]!=0){
@@ -143,13 +143,13 @@ void GameRoad::newBlock()
 		}
 	}
 	set_t = c>>2;
-	// æ¡ä»¶æ¤œç´¢
+	// ğŒŒŸõ
 	while(1){
 		b = rand() % 3;
 		if(b == 0 || b & set_t){ break; }
 	}
 	block.type = b;
-	// ã‚»ãƒƒãƒˆ
+	// ƒZƒbƒg
 	int set_k = rand() % RO_Y_CNT;
 	block.k = set_k;
 	block.ok = 1;
@@ -179,7 +179,7 @@ void  GameRoad::efeSet(int mode, int pos)
 }
 void GameRoad::Failureroad(void)
 {
-	// è½ã¡ãƒ–ãƒ­ãƒƒã‚¯å¤±æ•—ãƒã‚§ãƒƒã‚¯
+	// —‚¿ƒuƒƒbƒN¸”sƒ`ƒFƒbƒN
 	if(block.ok == 1){
 		block.ok = -1;
 		del_block = block;
@@ -187,19 +187,19 @@ void GameRoad::Failureroad(void)
 		miss++;
 	}
 }
-// ã‚­ãƒ¼åˆ¤å®š
+// ƒL[”»’è
 void GameRoad::roadSetCheck(void)
 {
 
 	int c = 0;
 	int i;
 	int n = -1;
-	if(block.ok != 1){ return; }			// è½ä¸‹ä¸­ã§ã¯ç„¡ã„
+	if(block.ok != 1){ return; }			// —‰º’†‚Å‚Í–³‚¢
 
 	int to_up, to_down, to_left = 0;
 	SPRITE *sp = &spd[RO_SP_BR_R1];
-	RO_LEVEL *lv = &levels[now_level];	// ç¾åœ¨ãƒ¬ãƒ™ãƒ«
-	// ç¾åœ¨ã®xä½ç½®ã‚’ç®—å‡º
+	RO_LEVEL *lv = &levels[now_level];	// Œ»İƒŒƒxƒ‹
+	// Œ»İ‚ÌxˆÊ’u‚ğZo
 	for (i=0; i<RO_X_CNT; i++) {	
 		if (block.x > roadx[i] && block.x < roadx[i]+sp->w){
 			break; 
@@ -215,13 +215,13 @@ void GameRoad::roadSetCheck(void)
 	if(block.k == RO_Y_CNT-1){ to_down = 0; }
 	else { to_down = roads[block.k+1][n] & 0x0f; }
 
-	// å·¦
+	// ¶
 	if(n == RO_X_CNT-1){ to_left = 1; }
 	else{ to_left = roads[block.k][n+1] & 0x0f; } 
 
 	int res = 0;
-	// ç©ç«‹æˆåŠŸ
-	// å·¦
+	// Ï—§¬Œ÷
+	// ¶
 	if((block.x <= roadx[n]+lv->speed) && to_left){
 		if(block.type == 0 && !to_up && !to_down){
 			res = 1;
@@ -230,7 +230,7 @@ void GameRoad::roadSetCheck(void)
 		}
 	}
 
-	// ä¸Š
+	// ã
 	if(to_up){
 		if(block.type == 1 && (!to_down && !to_left || n == RO_X_CNT-1)){ 
 			res = 2;
@@ -238,7 +238,7 @@ void GameRoad::roadSetCheck(void)
 			res = -2;
 		}
 	}
-	// ä¸‹
+	// ‰º
 	if(to_down){
 		if(block.type == 2 && (!to_left && !to_up || n == RO_X_CNT-1)){ 
 			res = 3;
@@ -283,7 +283,7 @@ static void BGMStop()
 }
 GameResult * GameRoad::update(void)
 {
-	int c = 0;	//è©²å½“ãƒ–ãƒ­ãƒƒã‚¯ã‚«ã‚¦ãƒ³ãƒˆ
+	int c = 0;	//ŠY“–ƒuƒƒbƒNƒJƒEƒ“ƒg
 	int i;
 
 	RO_LEVEL *lv = &levels[now_level];
@@ -291,18 +291,18 @@ GameResult * GameRoad::update(void)
 
 	switch(cond){
 		case RO_GAMEOVER:
-			// ã‚­ãƒ¼å¾…ã¡å¾Œé·ç§»
+			// ƒL[‘Ò‚¿Œã‘JˆÚ
 			if(Key[KEY_INPUT_Y] == 1){ init(rd_g_res); }
-			if(Key[KEY_INPUT_N] == 1){ // çµ‚äº†
+			if(Key[KEY_INPUT_N] == 1){ // I—¹
 				ro_g_res.end_status(0);
 				return &ro_g_res; 
 			}
 		break;
 		case RO_END:
 			ro_g_res.end_status(1);
-			return &ro_g_res; // å¹³å¸¸çµ‚äº†
+			return &ro_g_res; // •½íI—¹
 
-		// åˆæœŸåŒ–
+		// ‰Šú‰»
 		case RO_INI:{
 
 			DataLoad();
@@ -317,7 +317,7 @@ GameResult * GameRoad::update(void)
 			PlaySoundMem(se_num[RO_SE_START] , DX_PLAYTYPE_BACK);
 			break;
 		}
-		// ã‚²ãƒ¼ãƒ é–‹å§‹
+		// ƒQ[ƒ€ŠJn
 		case RO_GAME_S:
 
 			if(CheckSoundMem(se_num[RO_SE_START]) != 1){
@@ -325,12 +325,12 @@ GameResult * GameRoad::update(void)
 				PlaySoundMem(se_num[bgms[stage]] , DX_PLAYTYPE_LOOP);
 			}
 			break;
-		// ã‚²ãƒ¼ãƒ ä¸­
+		// ƒQ[ƒ€’†
 		case RO_GAME:
 			if(clearCheck() > -1){ cond = RO_CLEAR; BGMStop(); break;}
 
 			time++;
-			// ãƒ¬ãƒ™ãƒ«ãƒã‚§ãƒƒã‚¯
+			// ƒŒƒxƒ‹ƒ`ƒFƒbƒN
 			lv++;
 			if(lv->road != -1 && lv->road <= all_road){
 				now_level++;
@@ -343,26 +343,26 @@ GameResult * GameRoad::update(void)
 
 			if(move_time >= 6){
 				move_time = 0;
-				// è½ä¸‹
+				// —‰º
 				c = 0;
 				if(block.ok == 1){
 					block.x -= lv->speed;
 				}
 			}
 
-			// æ–°è¦ãƒ–ãƒ­ãƒƒã‚¯ç”Ÿæˆ
+			// V‹KƒuƒƒbƒN¶¬
 			newBlock();
 
-			// æ–¹å‘ã‚­ãƒ¼
-			// å…ˆã¸
+			// •ûŒüƒL[
+			// æ‚Ö
 			if(Key[KEY_INPUT_LEFT] > 0){
 				move_time++;
 			}
-			// åœæ»
+			// ’â‘Ø
 			if(Key[KEY_INPUT_RIGHT] > 0){
 				move_time--;
 			}
-			// ä½ç½®ç§»å‹•(ä¸Š)
+			// ˆÊ’uˆÚ“®(ã)
 			if(Key[KEY_INPUT_UP] == 1){
 				if(!(once_btn & 1)){
 					block.k--;
@@ -371,7 +371,7 @@ GameResult * GameRoad::update(void)
 				}
 			}else{ once_btn &= ~1; }
 
-			// ä½ç½®ç§»å‹•(ä¸‹)
+			// ˆÊ’uˆÚ“®(‰º)
 			if(Key[KEY_INPUT_DOWN] == 1){
 				if(!(once_btn & 2)){
 					block.k++;
@@ -380,7 +380,7 @@ GameResult * GameRoad::update(void)
 				}
 				
 			}else{ once_btn &= ~2; }
-			// å‘ãå¤‰æ›´ã‚­ãƒ¼
+			// Œü‚«•ÏXƒL[
 			if(Key[KEY_INPUT_RETURN] == 1 || Key[KEY_INPUT_Z] == 1){
 				if(!(once_btn & 4)){
 					block.col++;
@@ -427,18 +427,18 @@ void GameRoad::draw(void)
 		SetDrawBlendMode( DX_BLENDMODE_INVSRC, 128);
 	}
 
-	// èƒŒæ™¯
+	// ”wŒi
 	sp = &spd[RO_SP_BG];
 	DrawGraph(sp->x, sp->y, sp->num, TRUE);
 	
-	// è½ã¡ã‚‹ãƒ–ãƒ­ãƒƒã‚¯æç”»
+	// —‚¿‚éƒuƒƒbƒN•`‰æ
 	sp = &spd[cols[block.col]+block.type];
 	
 	if(block.ok == 1){
 		DrawGraph(block.x, roady[block.k], sp->num, TRUE);
 	}
 	
-	// ç¾åœ¨åŸ‹ã¾ã£ã¦ã„ã‚‹ãƒ–ãƒ­ãƒƒã‚¯ã‚’æç”»
+	// Œ»İ–„‚Ü‚Á‚Ä‚¢‚éƒuƒƒbƒN‚ğ•`‰æ
 	for(int i=0;i<RO_Y_CNT; i++){
 		for(int j=0; j<RO_X_CNT; j++){
 			int n = roads[i][j] & ~0xf0;
@@ -453,7 +453,7 @@ void GameRoad::draw(void)
 
 	if(cond == RO_GAMEOVER){
 
-		// ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼
+		// ƒQ[ƒ€ƒI[ƒo[
 		SetDrawBright( 255 , 255 , 255 );
 		for(int i=RO_SP_LOSE1; i<=RO_SP_LOSE4; i++){
 			sp = &spd[i];
@@ -467,16 +467,16 @@ void GameRoad::draw(void)
 		return;
 	}
 
-	// ã„ã¡
+	// ‚¢‚¿
 	sp = &spd[RO_SP_ICHI];
 	DrawGraph(sp->x, sp->y, ichi_num[sp->pat][sp->num], TRUE);
 
 	sp = &spd[RO_SP_FB];
 	DrawGraph(sp->x, sp->y, sp->num, TRUE);
 
-	RO_LEVEL *lv = &levels[now_level];	// ç¾åœ¨ãƒ¬ãƒ™ãƒ«
+	RO_LEVEL *lv = &levels[now_level];	// Œ»İƒŒƒxƒ‹
 
-	// å¤±æ•—ãƒ–ãƒ­ãƒƒã‚¯æç”»
+	// ¸”sƒuƒƒbƒN•`‰æ
 	if(del_block.ok > 0){
 		del_block.ok -= 8;
 		SetDrawBlendMode( DX_BLENDMODE_NOBLEND , 0);
@@ -486,15 +486,15 @@ void GameRoad::draw(void)
 	else{
 		int n = del_block.type;
 		sp = &spd[cols[del_block.col] + n];
-		SetDrawBlendMode( DX_BLENDMODE_ALPHA,  del_block.ok );	//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
+		SetDrawBlendMode( DX_BLENDMODE_ALPHA,  del_block.ok );	//ƒuƒŒƒ“ƒhƒ‚[ƒh
 		DrawRotaGraph( del_block.x, roady[del_block.k], 1.0,  0.0, sp->num, TRUE );
 
-		// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆæç”»
+		// ƒGƒtƒFƒNƒg•`‰æ
 		if(del_block.ok > 184){	sp = &spd[RO_SP_NG1]; }
 		else{ sp = &spd[RO_SP_NG2]; }
 		DrawGraph(sp->x, sp->y, sp->num, TRUE);
 
-		SetDrawBlendMode( DX_BLENDMODE_NOBLEND,  0 );		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰ã‚’ã‚ªãƒ•
+		SetDrawBlendMode( DX_BLENDMODE_NOBLEND,  0 );		//ƒuƒŒƒ“ƒhƒ‚[ƒh‚ğƒIƒt
 	}
 
 	if(efe_ok > 0){
@@ -518,24 +518,24 @@ void GameRoad::draw(void)
 		
 	}
 #ifdef _DEBUG
-	// ã‚¯ãƒªã‚¢æç”»
+	// ƒNƒŠƒA•`‰æ
 	if(cond == RO_CLEAR){
 		if(stage == 0){
 			SetFontSize(24);
-			DrawFormatString( 420 , 8 , GetColor( 0 , 0 , 0 ), "Ichi can walk! (â†/â†“/â†‘/â†’)");
+			DrawFormatString( 420 , 8 , GetColor( 0 , 0 , 0 ), "Ichi can walk! (©/«/ª/¨)");
 			SetFontSize(20);
 			DrawFormatString( 100, 48, GetColor(0, 0, 0), 
 				"Let's cross to the opposite shore. Or let's fall from a bridge. " );
 			DrawFormatString( 100, 76, GetColor(0, 0, 0), 
-				"å¯¾å²¸ã¸æ¸¡ã‚Šã¾ã—ã‚‡ã†ã€‚ç„¡ç†ãªã‚‰æ©‹ã‹ã‚‰è½ã¡ã¾ã—ã‚‡ã†ã€‚" );
+				"‘ÎŠİ‚Ö“n‚è‚Ü‚µ‚å‚¤B–³—‚È‚ç‹´‚©‚ç—‚¿‚Ü‚µ‚å‚¤B" );
 		}
 	}else if(stage == 0){
-		DrawString(100, 48+8, "â†‘/â†“ï¼šPanel up down", GetColor(0, 0, 0));
-		DrawString(100, 76+8, "â†/â†’ï¼šPanel speed up or down", GetColor(0, 0, 0));
+		DrawString(100, 48+8, "ª/«FPanel up down", GetColor(0, 0, 0));
+		DrawString(100, 76+8, "©/¨FPanel speed up or down", GetColor(0, 0, 0));
 		DrawString(100, 104+8,"Enter-key:panel is rotated.", GetColor(0, 0, 0));
 		DrawString(100, 132+8, "Let's connect a portion without a frame and construct a bridge. ", GetColor(0, 0, 0));
-		DrawString(100, 160+8, "æµã‚Œã‚‹éŸ³ã®ãƒ‘ãƒãƒ«ã‚’ã€å·¦å²¸ã‹ä»–ã®ãƒ‘ãƒãƒ«ã«ã¤ãªã’ã¦é“ã‚’ä½œã‚Šã¾ã—ã‚‡ã†ã€‚", GetColor(0, 0, 0));
-		DrawString(100, 188+8, "æ ã®ç„¡ã„é¢ã§ã®ã¿ã€ã¤ãªã’ã‚‰ã‚Œã¾ã™ã€‚", GetColor(0, 0, 0));
+		DrawString(100, 160+8, "—¬‚ê‚é‰¹‚Ìƒpƒlƒ‹‚ğA¶Šİ‚©‘¼‚Ìƒpƒlƒ‹‚É‚Â‚È‚°‚Ä“¹‚ğì‚è‚Ü‚µ‚å‚¤B", GetColor(0, 0, 0));
+		DrawString(100, 188+8, "˜g‚Ì–³‚¢–Ê‚Å‚Ì‚İA‚Â‚È‚°‚ç‚ê‚Ü‚·B", GetColor(0, 0, 0));
 	}
 
 #else
@@ -567,11 +567,11 @@ typedef struct{
 	int x,y;
 }SXY;
 
-// ã‚­ãƒ£ãƒ©ç§»å‹•
+// ƒLƒƒƒ‰ˆÚ“®
 void GameRoad::chMove(void)
 {
 	if(ch_walk == 0){ return; }
-	// ç§»å‹•ç‡
+	// ˆÚ“®—¦
 	static SXY adds[] = {
 		{ 0, 8},
 		{ 0, 8},
@@ -616,10 +616,10 @@ void GameRoad::chMove(void)
 	}
 }
 
-// è¶³åº§æ¨™ãƒ»è¸ã‚“ã ã‚‚ã®ãƒã‚§ãƒƒã‚¯
+// ‘«À•WE“¥‚ñ‚¾‚à‚Ìƒ`ƒFƒbƒN
 void GameRoad::chReg(SPRITE *sp)
 {
-	// è¶³å…ƒ
+	// ‘«Œ³
 	reg.x = sp->x;
 	reg.y = sp->y + sp->h - 4;
 	if(reg.y < 0){ reg.y = 0; }
@@ -637,14 +637,14 @@ void GameRoad::chReg(SPRITE *sp)
 		cond = RO_END; now.x = -1; now.y = -1; return; 
 	}
 
-	// ç¾åœ¨ã®xä½ç½®ã‚’ç®—å‡º
+	// Œ»İ‚ÌxˆÊ’u‚ğZo
 	for (i=0; i<RO_X_CNT; i++) {
 		if (reg.x >= roadx[i] && reg.x < roadx[i]+sp2->w) { break; }
 	}
 	_x = i;
 
 	c = 0;
-	// ç¾åœ¨ã®yä½ç½®ã‚’ç®—å‡º
+	// Œ»İ‚ÌyˆÊ’u‚ğZo
 	for (i=0; i<RO_Y_CNT; i++) {
 		if (reg.y >= roady[i] && reg.y < roady[i]+sp2->h+4) { break; }
 		c = i;
@@ -655,7 +655,7 @@ void GameRoad::chReg(SPRITE *sp)
 	if(!(roads[_y][_x] & 0x0f)){
 		cond = RO_GAMEOVER;
 	}else{
-		// ã‚ã‚Œã°å†ç”Ÿ
+		// ‚ ‚ê‚ÎÄ¶
 		if(now.x != _x || now.y != _y){
 			PlaySoundMem(roads_se[_y][_x] , DX_PLAYTYPE_BACK);
 		}

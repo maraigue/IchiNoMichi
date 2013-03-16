@@ -4,6 +4,7 @@
 #define BIT(n) (1 << (n))
 #define XPOS(stg) ((stg)[0])
 #define YPOS(stg) ((stg)[1])
+#define STAGE_VISIBLE(stg) (!((stg)[0] == 0 && (stg)[1] == 0))
 #define STAGE_LEVEL(stg) ((stg)[2])
 #define STAGE_COLOR(stg) ((stg)[3])
 #define NEXT_STAGES(stg) ((stg)[4])
@@ -19,13 +20,16 @@ private:
 
 	static const int STAGE_WIDTH = 94;
 	static const int STAGE_HEIGHT = 94;
-
+	static const int SHADE_HEIGHT = 11;
+	
 	int current_stage_id; // 選択中のステージ（IDは0起点）
 	int previous_stage_id; // 最後にクリアしたステージ（まだ何もクリアしてない場合は-1）
 	int cleared_stage_ids; // クリア済みのステージ一覧（ビットマスク。例えばステージ0と3をクリア済みならBIT(0)|BIT(3)）
 	int game_cleared; // エンディング前のステージをクリアしたならそのステージのID、そうでなければ0
 	int stage_map;
-	int icon_map[10];
+	int stage_template;
+	int icon_map[11];
+	int line_right[2], line_rightup[2], line_rightdown[2]; // 0：選択されてないライン 1：選択されたライン
 	
 	int color_bg, color_link, color_stage_not_cleared, color_stage_cleared;
 	Cycle cycle_cursor;
@@ -34,37 +38,67 @@ private:
 		return StageDef::STAGE[stage_id];
 	}
 
-	void draw_stage(int stage_id){
+	void draw_stage(int stage_id, int image_id = 0){
 		// ---------- ステージを1つ描画する ----------
-		if(XPOS(stage(stage_id)) == 0 && YPOS(stage(stage_id)) == 0) return;
+		if(!STAGE_VISIBLE(stage(stage_id))){
+			return;
+		}
+
+		if(image_id == 0) image_id = icon_map[stage_id + StageDef::ICON_ID_OFFSET];
+		DrawGraph(XPOS(stage(stage_id)) - STAGE_WIDTH / 2, YPOS(stage(stage_id)) - STAGE_HEIGHT / 2, image_id, TRUE);
+	}
+
+	void draw_link(int stage_id1, int stage_id2, int chosen){
+		// ---------- リンクを1つ描画する ----------
+		// chosenは選択中のリンクなら1、そうでなければ0（-1とかは不可）
 		
-		DrawGraph(XPOS(stage(stage_id)) - STAGE_WIDTH / 2, YPOS(stage(stage_id)) - STAGE_HEIGHT / 2, icon_map[stage_id], TRUE);
+		if(!STAGE_VISIBLE(stage(stage_id1)) || !STAGE_VISIBLE(stage(stage_id2))) return;
+
+		int src_id, dst_id;
+		
+		if(XPOS(stage(stage_id1)) < XPOS(stage(stage_id2))){
+			src_id = stage_id1;
+			dst_id = stage_id2;
+		}else{
+			src_id = stage_id2;
+			dst_id = stage_id1;
+		}
+
+		// 現時点では、どのマップを使っても1種類の線の組み合わせで十分、という前提で
+		// コードを書いている。
+		// もっと様々な形態の線を使うのであれば、どの線を使うかをStageDef側で
+		// 定義できるようにすべき。
+		if(YPOS(stage(src_id)) < YPOS(stage(dst_id))){
+			DrawGraph(XPOS(stage(src_id)), YPOS(stage(src_id)), line_rightdown[chosen], TRUE);
+		}else if (YPOS(stage(src_id)) > YPOS(stage(dst_id))){
+			DrawGraph(XPOS(stage(src_id)), YPOS(stage(dst_id)), line_rightup[chosen], TRUE);
+		}else{
+			DrawGraph(XPOS(stage(src_id)), YPOS(stage(src_id)), line_right[chosen], TRUE);
+		}
 	}
 
 	void create_stage_map_template(void){
-		/*
 		// ---------- ステージのテンプレートを作る ----------
-		SetDrawScreen(stage_map);
+		SetDrawScreen(stage_template);
 
-		// 白で塗りつぶす
-		DrawBox(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, color_bg, TRUE);
+		DrawGraph(0, 0, stage_map, FALSE);
 		
 		// リンクを描く
-		for(int n = 0; n < StageDef::STAGE_NUMBER; ++n){
-			if(XPOS(stage(n)) == 0 && YPOS(stage(n)) == 0) continue;
-			for(int i = 0; i < StageDef::STAGE_NUMBER; ++i){
-				if(IS_NEXT_STAGE(stage(n), i)){
-					DrawLine(XPOS(stage(n)), YPOS(stage(n)), XPOS(stage(i)), YPOS(stage(i)), color_link, 3);
+		for(int i = 0; i < StageDef::STAGE_NUMBER; ++i){
+			for(int j = i + 1; j < StageDef::STAGE_NUMBER; ++j){
+				// iからjへ向かう線がある場合、描画する
+				if(NEXT_STAGES(stage(i)) & BIT(j)){
+					draw_link(i, j, 0);
 				}
 			}
 		}
-
+		
 		// ステージを描く
 		for(int n = 0; n < StageDef::STAGE_NUMBER; ++n){
 			draw_stage(n);
 		}
+
 		SetDrawScreen(DX_SCREEN_FRONT);
-		*/
 	}
 	
 	// 選択中のステージを切り替える
@@ -100,8 +134,15 @@ public:
 		icon_map[7] = LoadGraph("res/img/4-R.png");
 		icon_map[8] = LoadGraph("res/img/4-G.png");
 		icon_map[9] = LoadGraph("res/img/4-B.png");
-		
+		line_right[0] = LoadGraph("res/img/path_―.png");
+		line_right[1] = LoadGraph("res/img/path2_―.png");
+		line_rightup[0] = LoadGraph("res/img/path_／.png");
+		line_rightup[1] = LoadGraph("res/img/path2_／.png");
+		line_rightdown[0] = LoadGraph("res/img/path_＼.png");
+		line_rightdown[1] = LoadGraph("res/img/path2_＼.png");
 		stage_map = LoadGraph("res/bg/map_bg.png");
+		stage_template = MakeScreen(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+
 		current_stage_id = 0;
 		previous_stage_id = 0;
 		cleared_stage_ids = 0;
@@ -159,14 +200,9 @@ public:
 		int color2 = GetColor(254 - 127 * offset, 0, 0);
 
 		// テンプレートを描く
-		DrawGraph(0, 0, stage_map, FALSE);
+		DrawGraph(0, 0, stage_template, FALSE);
 
-		// アイコンを描く
 		int cx0, cy0;
-
-		for(int i = 0; i < StageDef::STAGE_NUMBER; ++i){
-			draw_stage(i);
-		}
 
 		// 現在カーソルが当たっているステージについての座標情報
 		// cx0/cy0が中心座標、他はステージの四角形の座標
@@ -178,42 +214,14 @@ public:
 		int cy2 = cy0 + STAGE_WIDTH / 2;
 
 		// 前にいたステージから選択中のステージへの線を強調する
-		int px0, py0;
-
-		if(previous_stage_id >= 0){
-			px0 = XPOS(stage(previous_stage_id));
-			py0 = YPOS(stage(previous_stage_id));
-			
-			if(!(px0 == 0 && py0 == 0)){
-				DrawLine(px0, py0 - 3, cx0, cy0 - 3, color2);
-				DrawLine(px0, py0 - 2, cx0, cy0 - 2, color2);
-				DrawLine(px0, py0 - 1, cx0, cy0 - 1, color1);
-				DrawLine(px0, py0, cx0, cy0, color1);
-				DrawLine(px0, py0 + 1, cx0, cy0 + 1, color1);
-				DrawLine(px0, py0 + 2, cx0, cy0 + 2, color2);
-				DrawLine(px0, py0 + 3, cx0, cy0 + 3, color2);
-			}
-			
-			
-			draw_stage(previous_stage_id);
-			draw_stage(current_stage_id);
-		}
-
+		draw_link(previous_stage_id, current_stage_id, 1);
+		draw_stage(previous_stage_id);
+		draw_stage(current_stage_id);
+		
 		// 選択中のステージを強調する
-		/*
-		DrawBox(cx1, cy1, cx2, cy2, color1, FALSE);
-		DrawBox(cx1 + 1, cy1 + 1, cx2 - 1, cy2 - 1, color1, FALSE);
-		DrawBox(cx1 + 2, cy1 + 2, cx2 - 2, cy2 - 2, color1, FALSE);
-		DrawBox(cx1 + 3, cy1 + 3, cx2 - 3, cy2 - 3, color2, FALSE);
-		DrawBox(cx1 + 4, cy1 + 4, cx2 - 4, cy2 - 4, color2, FALSE);
-		DrawBox(cx1 + 5, cy1 + 5, cx2 - 5, cy2 - 5, color2, FALSE);
-		*/
-		DrawCircle(cx0, cy0, 50, color1, FALSE);
-		DrawCircle(cx0, cy0, 51, color1, FALSE);
-		DrawCircle(cx0, cy0, 52, color1, FALSE);
-		DrawCircle(cx0, cy0, 53, color2, FALSE);
-		DrawCircle(cx0, cy0, 54, color2, FALSE);
-		DrawCircle(cx0, cy0, 55, color2, FALSE);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(cos(static_cast<float>(GetNowCount() % 1500) * (M_PI * 2) / 1500.0) * 255.0));
+		draw_stage(current_stage_id, icon_map[0]);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 };
 
@@ -230,17 +238,18 @@ class StageDefMap {
 public:
 	static const int STAGE_NUMBER = 11;
 	static const int STAGE[STAGE_NUMBER][5];
+	static const int ICON_ID_OFFSET = -1;
 };
 
 const int StageDefMap::STAGE[STAGE_NUMBER][5] = {
 	{0, 0, 0, -1, BIT(1)},
 	{109, 303, 1,-1, BIT(2)|BIT(3)|BIT(4)},
-	{286, 180, 2, 0, BIT(5)|BIT(6)|BIT(7)},
+	{286, 180, 2, 0, BIT(5)|BIT(6)},
 	{286, 303, 2, 1, BIT(5)|BIT(6)|BIT(7)},
-	{286, 431, 2, 2, BIT(5)|BIT(6)|BIT(7)},
-	{463, 180, 3, 0, BIT(8)|BIT(9)|BIT(10)},
+	{286, 431, 2, 2, BIT(6)|BIT(7)},
+	{463, 180, 3, 0, BIT(8)|BIT(9)},
 	{463, 303, 3, 1, BIT(8)|BIT(9)|BIT(10)},
-	{463, 431, 3, 2, BIT(8)|BIT(9)|BIT(10)},
+	{463, 431, 3, 2, BIT(9)|BIT(10)},
 	{640, 180, 4, 0, 0},
 	{640, 303, 4, 1, 0},
 	{640, 431, 4, 2, 0},
@@ -251,6 +260,7 @@ class StageDefTutorial {
 public:
 	static const int STAGE_NUMBER = 4;
 	static const int STAGE[STAGE_NUMBER][5];
+	static const int ICON_ID_OFFSET = 0;
 };
 
 const int StageDefTutorial::STAGE[STAGE_NUMBER][5] = {

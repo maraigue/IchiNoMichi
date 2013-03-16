@@ -34,7 +34,8 @@ protected:
 
 	int cleared;
 	static const int TIME_END = 3000; // ステージクリア時のメッセージを表示する時間
-	int TIME_LIMIT; // 時間制限
+	int TIME_LIMIT; // 時間制限（ミリ秒）
+	int STEP_INCREASE_RATE; // 足場が出る間隔（ミリ秒）
 
 	static const int GRID_SIZE = 50;
 	static const int CHARA_TOP = 50; // キャラがどれだけグリッドの上部にはみ出すか
@@ -89,9 +90,10 @@ public:
 		color_cursor_cur = GetColor(255, 0, 0);
 		color_font = GetColor(255, 255, 255);
 		sound_bgms[0] = LoadSoundMem("res/bgm/Stage1.mp3");
-		sound_bgms[1] = LoadSoundMem("res/bgm/Stage1.mp3");
+		sound_bgms[1] = sound_bgms[0]
 		sound_bgms[2] = LoadSoundMem("res/bgm/Stage2.mp3");
 		sound_bgms[3] = LoadSoundMem("res/bgm/Stage3.mp3");
+		sound_bgms[4] = sound_bgms[3]
 		//sound_jump = LoadSoundMem("res/BGM2011.wav");
 	}
 
@@ -110,7 +112,6 @@ public:
 		DeleteGraph(image_background_normal[2]);
 		DeleteGraph(image_tutorial);
 		DeleteSoundMem(sound_bgms[0]);
-		DeleteSoundMem(sound_bgms[1]);
 		DeleteSoundMem(sound_bgms[2]);
 		DeleteSoundMem(sound_bgms[3]);
 	}
@@ -132,7 +133,8 @@ public:
 		image_background = image_background_normal[result ? result->stage_color() : 0];
 		image_foreground = image_foreground_normal[result ? result->stage_color() : 0];
 		sound_bgm = sound_bgms[result ? result->stage_level() : 0];
-		TIME_LIMIT = result ? (10000 * (6 - result->stage_level())) : 100;
+		TIME_LIMIT = result ? (5000 * (11 - result->stage_level())) : 100;
+		STEP_INCREASE_RATE = result ? (50 * (16 + result->stage_level())) : 1000;
 		
 		res.end_status(0);
 		res.r_score(0);
@@ -205,8 +207,8 @@ public:
 			}
 		}
 
-		// 足場を増やす（1秒に1個の割合）
-		if(int_rand(0, 1000) < diff_time){
+		// 足場を増やす（STEP_INCREASE_RATEミリ秒に1個の割合）
+		if(int_rand(0, STEP_INCREASE_RATE) < diff_time){
 			int steppos_x = XGRIDS;
 			int steppos_y = YGRIDS;
 			int steppos_count = 6;
@@ -240,7 +242,7 @@ public:
 				case CTRL_CODE_RIGHT:
 					++new_cursorX;
 					break;
-				case CTRL_CODE_CR:
+				case CTRL_CODE_CR: case 'z':
 					x = charaX + cursorX;
 					y = charaY + cursorY;
 					if(!(cursorX == 0 && cursorY == 0) && is_in_map(x, y) && getMapValue(x, y).is_stepped()){
@@ -436,6 +438,14 @@ public:
 
 	GameResult * update(void){
 		elapsed = GetNowCount() - start_time;
+		
+		// キーが押された場合、時計を進め、チュートリアル終了を早める
+		switch(GetInputChar(TRUE)){
+			case CTRL_CODE_CR: case 'z':
+				start_time -= (29000 - elapsed);
+				elapsed = 29000;
+				break;
+		}
 		
 		blink = (elapsed > 6000) ? 0 : abs((elapsed / 5) % 510 - 255);
 		
